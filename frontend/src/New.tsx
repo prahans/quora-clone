@@ -1,0 +1,86 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
+function New() {
+  const navigate = useNavigate();
+
+  const [content, setContent] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setError("");
+
+    if (!content.trim()) {
+      setError("Please write something before submitting.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+
+      const response = await axios.post(
+        "http://localhost:3000/api/posts",
+        {
+          content: content.trim(),
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      console.log("Post created:", response.data);
+
+      navigate("/");
+    } catch (error) {
+      console.error("Error creating post:", error);
+
+      if (axios.isAxiosError(error)) {
+        setError(error.response?.data?.message || "Failed to create post.");
+      } else {
+        setError("Something went wrong.");
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <>
+      <h1>Create a new post</h1>
+
+      <form onSubmit={handleSubmit}>
+        <textarea
+          name="content"
+          placeholder="Write your post..."
+          value={content}
+          onChange={(e) => setContent(e.target.value)}
+          disabled={isSubmitting}
+        />
+
+        {error && <p>{error}</p>}
+
+        <br />
+
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? "Submitting..." : "Submit post"}
+        </button>
+      </form>
+
+      <br />
+
+      <button
+        type="button"
+        onClick={() => navigate(-1)}
+        disabled={isSubmitting}
+      >
+        Go back
+      </button>
+    </>
+  );
+}
+
+export default New;
