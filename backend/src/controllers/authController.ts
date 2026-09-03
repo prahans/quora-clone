@@ -43,8 +43,8 @@ export const signup = async (
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      maxAge: 3 * 24 * 60 * 60 * 1000,
     });
 
     // 6. Send safe user data
@@ -114,8 +114,8 @@ export const login = async (
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 3 * 24 * 60 * 60 * 1000, // 3 days
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
+      maxAge: 3 * 24 * 60 * 60 * 1000,
     });
 
     // 8. Send successful response
@@ -142,7 +142,7 @@ export const logout = (
     res.clearCookie("token", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "strict",
     });
 
     res.status(200).json({
