@@ -23,16 +23,12 @@ function New() {
     try {
       setIsSubmitting(true);
 
-      const response = await api.post("/api/posts", {
+      await api.post("/api/posts", {
         content: content.trim(),
       });
 
-      console.log("Post created:", response.data);
-
       navigate("/");
     } catch (error) {
-      console.error("Error creating post:", error);
-
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "Failed to create post.");
       } else {

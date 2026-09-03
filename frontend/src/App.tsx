@@ -5,8 +5,18 @@ import New from "./New";
 import Show from "./Show";
 import Login from "./LoginPage";
 import Signup from "./signup";
+import { apiConfigurationError } from "./api";
 
 function App() {
+  if (apiConfigurationError) {
+    return (
+      <main>
+        <h1>Service unavailable</h1>
+        <p>{apiConfigurationError}</p>
+      </main>
+    );
+  }
+
   return (
     <BrowserRouter>
       <Routes>

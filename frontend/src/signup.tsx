@@ -28,19 +28,15 @@ function Signup() {
     try {
       setIsSigningUp(true);
 
-      const response = await api.post("/api/auth/signup", {
+      await api.post("/api/auth/signup", {
         email: email.trim(),
         username: username.trim(),
         password,
       });
 
-      console.log(response.data);
-
       // Signup successful
       navigate("/");
     } catch (error) {
-      console.error("Signup failed:", error);
-
       if (axios.isAxiosError(error)) {
         setError(
           error.response?.data?.message || "Failed to create your account.",

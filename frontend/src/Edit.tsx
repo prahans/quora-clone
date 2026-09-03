@@ -39,8 +39,7 @@ function Edit() {
 
       // 4. Redirect the user back to the feed page after success
       navigate("/");
-    } catch (error) {
-      console.error("Error creating post:", error);
+    } catch {
       alert("Failed to submit post. Check if your server is running.");
     } finally {
       setIsSubmitting(false);

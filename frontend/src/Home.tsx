@@ -34,8 +34,6 @@ function Home() {
 
         setPosts(response.data);
       } catch (error) {
-        console.error("Failed to fetch posts:", error);
-
         if (axios.isAxiosError(error)) {
           setError(error.response?.data?.message || "Failed to load posts.");
         } else {
@@ -55,8 +53,7 @@ function Home() {
         const response = await api.get("/api/auth/me");
 
         setCurrentUser(response.data.user);
-      } catch (error) {
-        console.error("Failed to get current user:", error);
+      } catch {
         setCurrentUser(null);
       }
     };
@@ -78,8 +75,6 @@ function Home() {
         currentPosts.filter((post) => post._id !== id),
       );
     } catch (error) {
-      console.error("Failed to delete post:", error);
-
       if (axios.isAxiosError(error)) {
         alert(error.response?.data?.message || "Failed to delete post.");
       } else {
@@ -93,8 +88,8 @@ function Home() {
       await api.post("/api/auth/logout");
 
       navigate("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
+    } catch {
+      setError("Failed to log out. Please try again.");
     }
   };
 

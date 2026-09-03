@@ -27,18 +27,14 @@ function Login() {
     try {
       setIsLoggingIn(true);
 
-      const response = await api.post("/api/auth/login", {
+      await api.post("/api/auth/login", {
         email: email.trim(),
         password,
       });
 
-      console.log(response.data);
-
       // Login successful
       navigate("/");
     } catch (error) {
-      console.error("Login failed:", error);
-
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "Invalid email or password.");
       } else {
