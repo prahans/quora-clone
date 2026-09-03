@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL;
+import { api } from "./api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -28,17 +28,11 @@ function Signup() {
     try {
       setIsSigningUp(true);
 
-      const response = await axios.post(
-        `${API_URL}/api/auth/signup`,
-        {
-          email: email.trim(),
-          username: username.trim(),
-          password,
-        },
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await api.post("/api/auth/signup", {
+        email: email.trim(),
+        username: username.trim(),
+        password,
+      });
 
       console.log(response.data);
 

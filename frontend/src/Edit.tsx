@@ -1,5 +1,4 @@
-import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL;
+import { api } from "./api";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -33,16 +32,10 @@ function Edit() {
       setIsSubmitting(true);
 
       // 3. Make the POST network request directly to your Express API
-      await axios.put(
-        `${API_URL}/api/posts/${post?._id}`,
-        {
-          username: post?.username,
-          content: content,
-        },
-        {
-          withCredentials: true,
-        },
-      );
+      await api.put(`/api/posts/${post?._id}`, {
+        username: post?.username,
+        content: content,
+      });
 
       // 4. Redirect the user back to the feed page after success
       navigate("/");

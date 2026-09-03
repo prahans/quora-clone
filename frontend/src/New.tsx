@@ -1,7 +1,7 @@
 import { useState } from "react";
-const API_URL = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { api } from "./api";
 
 function New() {
   const navigate = useNavigate();
@@ -23,15 +23,9 @@ function New() {
     try {
       setIsSubmitting(true);
 
-      const response = await axios.post(
-        `${API_URL}/api/posts`,
-        {
-          content: content.trim(),
-        },
-        {
-          withCredentials: true,
-        },
-      );
+      const response = await api.post("/api/posts", {
+        content: content.trim(),
+      });
 
       console.log("Post created:", response.data);
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL;
+import { api } from "./api";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -30,9 +30,7 @@ function Home() {
         setIsLoading(true);
         setError("");
 
-        const response = await axios.get<Post[]>(`${API_URL}/api/posts`, {
-          withCredentials: true,
-        });
+        const response = await api.get<Post[]>("/api/posts");
 
         setPosts(response.data);
       } catch (error) {
@@ -54,9 +52,7 @@ function Home() {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/auth/me`, {
-          withCredentials: true,
-        });
+        const response = await api.get("/api/auth/me");
 
         setCurrentUser(response.data.user);
       } catch (error) {
@@ -76,9 +72,7 @@ function Home() {
     if (!confirmed) return;
 
     try {
-      await axios.delete(`${API_URL}/api/posts/${id}`, {
-        withCredentials: true,
-      });
+      await api.delete(`/api/posts/${id}`);
 
       setPosts((currentPosts) =>
         currentPosts.filter((post) => post._id !== id),
@@ -96,13 +90,7 @@ function Home() {
 
   const handleLogout = async () => {
     try {
-      await axios.post(
-        `${API_URL}/api/auth/logout`,
-        {},
-        {
-          withCredentials: true,
-        },
-      );
+      await api.post("/api/auth/logout");
 
       navigate("/login");
     } catch (error) {
