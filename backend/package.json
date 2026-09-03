@@ -7,7 +7,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts"
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.10",
@@ -15,7 +16,6 @@
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^26.2.0",
-    "tsx": "^4.23.12",
     "typescript": "^7.0.2"
   },
   "dependencies": {
@@ -25,6 +25,7 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
-    "mongoose": "^9.9.3"
+    "mongoose": "^9.9.3",
+    "tsx": "^4.23.12"
   }
 }
