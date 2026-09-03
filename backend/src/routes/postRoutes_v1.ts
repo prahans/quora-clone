@@ -22,8 +22,6 @@ router.post("/", userVerification, async (req: Request, res: Response) => {
 // Added the forward slash right before :id
 router.delete("/:id", userVerification, async (req: Request, res: Response) => {
   const { id } = req.params;
-  console.log("Deleting post with ID:", id);
-
   try {
     // 1. Delete the document from your MongoDB cluster via Mongoose
     const deletedPost = await Post.findByIdAndDelete(id);
@@ -46,8 +44,6 @@ router.delete("/:id", userVerification, async (req: Request, res: Response) => {
 router.put("/:id", userVerification, async (req: Request, res: Response) => {
   const { id } = req.params;
   const { username, content } = req.body; // Extract fields coming from React
-
-  console.log("Updating post with ID:", id);
 
   try {
     // 1. Update the document.
