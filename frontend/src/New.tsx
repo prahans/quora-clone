@@ -1,4 +1,5 @@
 import { useState } from "react";
+const API_URL = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -23,7 +24,7 @@ function New() {
       setIsSubmitting(true);
 
       const response = await axios.post(
-        "http://localhost:3000/api/posts",
+        `${API_URL}/api/posts`,
         {
           content: content.trim(),
         },

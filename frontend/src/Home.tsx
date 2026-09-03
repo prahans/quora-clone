@@ -1,4 +1,5 @@
 import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -29,12 +30,9 @@ function Home() {
         setIsLoading(true);
         setError("");
 
-        const response = await axios.get<Post[]>(
-          "http://localhost:3000/api/posts",
-          {
-            withCredentials: true,
-          },
-        );
+        const response = await axios.get<Post[]>(`${API_URL}/api/posts`, {
+          withCredentials: true,
+        });
 
         setPosts(response.data);
       } catch (error) {
@@ -56,7 +54,7 @@ function Home() {
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
-        const response = await axios.get("http://localhost:3000/api/auth/me", {
+        const response = await axios.get(`${API_URL}/api/auth/me`, {
           withCredentials: true,
         });
 
@@ -78,7 +76,7 @@ function Home() {
     if (!confirmed) return;
 
     try {
-      await axios.delete(`http://localhost:3000/api/posts/${id}`, {
+      await axios.delete(`${API_URL}/api/posts/${id}`, {
         withCredentials: true,
       });
 
@@ -99,7 +97,7 @@ function Home() {
   const handleLogout = async () => {
     try {
       await axios.post(
-        "http://localhost:3000/api/auth/logout",
+        `${API_URL}/api/auth/logout`,
         {},
         {
           withCredentials: true,
