@@ -4,6 +4,48 @@ A full-stack, Quora-inspired posting application built with React, TypeScript, N
 
 **[Live Demo](https://quora-clone-lemon-two.vercel.app/)** · **[Source Code](https://github.com/prahans/quora-clone)**
 
+## Screenshot
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="./screenshots/home.png" alt="Home 1" width="350">
+    </td>
+    <td align="center">
+      <img src="./screenshots/login.png" alt="Home 2" width="350">
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <img src="./screenshots/signup.png" alt="Home 3" width="350">
+    </td>
+    <td align="center">
+      <img src="./screenshots/edit.png" alt="Card" width="350">
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <img src="./screenshots/create.png" alt="Review" width="350">
+    </td>
+    <td align="center">
+      <img src="./screenshots/show.png" alt="Form" width="350">
+    </td>
+  </tr>
+
+  <tr>
+    <td align="center">
+      <img src="./screenshots/navbar.png" alt="Navbar" width="350">
+    </td>
+    <td align="center">
+      <img src="./screenshots/footer.png" alt="Footer" width="350">
+    </td>
+  </tr>
+</table>
+
+---
+
 ## Overview
 
 This project brings together a React frontend and an Express REST API to demonstrate authentication, authorization, database persistence, and deployment across separate services. The frontend is hosted on **Vercel**, and the backend is hosted on **Render**.
@@ -23,15 +65,15 @@ The current version focuses on text posts and user accounts. Separate question-a
 
 ## Tech Stack
 
-| Layer | Technologies |
-| --- | --- |
-| Frontend | React, TypeScript, React Router, Axios, CSS |
-| Frontend tooling | Vite, ESLint |
-| Backend | Node.js, Express, TypeScript, tsx |
-| Database | MongoDB, Mongoose |
-| Authentication | JSON Web Tokens, bcryptjs, cookie-parser |
-| Configuration | dotenv, cors |
-| Hosting | Vercel for the frontend; Render for the backend |
+| Layer            | Technologies                                    |
+| ---------------- | ----------------------------------------------- |
+| Frontend         | React, TypeScript, React Router, Axios, CSS     |
+| Frontend tooling | Vite, ESLint                                    |
+| Backend          | Node.js, Express, TypeScript, tsx               |
+| Database         | MongoDB, Mongoose                               |
+| Authentication   | JSON Web Tokens, bcryptjs, cookie-parser        |
+| Configuration    | dotenv, cors                                    |
+| Hosting          | Vercel for the frontend; Render for the backend |
 
 ## Try the App
 
@@ -45,23 +87,23 @@ The feed requires authentication. Visitors who are signed out can use **Go to Lo
 
 ## Project Organization
 
-| Path | Purpose |
-| --- | --- |
-| `frontend/src/App.tsx` | Client-side routes |
-| `frontend/src/api.ts` | Shared Axios client and backend URL configuration |
-| `frontend/src/Home.tsx` | Feed, current user, deletion, and logout |
-| `frontend/src/New.tsx`, `Edit.tsx`, `Show.tsx` | Post creation, editing, and detail views |
-| `frontend/src/LoginPage.tsx`, `signup.tsx` | Authentication forms |
-| `frontend/vercel.json` | SPA routing rewrite |
-| `backend/src/index.ts` | Express setup, middleware, and server startup |
-| `backend/src/config/db.ts` | MongoDB connection |
-| `backend/src/controllers/authController.ts` | Signup, login, and logout handlers |
-| `backend/src/middlewares/authMiddleware.ts` | Token verification and authenticated user lookup |
-| `backend/src/models/` | User and post schemas |
-| `backend/src/routes/authRoutes.ts` | Authentication endpoints |
-| `backend/src/routes/postRoutes.ts` | Active post endpoints and ownership checks |
-| `backend/src/util/secretToken.ts` | JWT creation |
-| `backend/src/types/express.d.ts` | Express request type augmentation |
+| Path                                           | Purpose                                           |
+| ---------------------------------------------- | ------------------------------------------------- |
+| `frontend/src/App.tsx`                         | Client-side routes                                |
+| `frontend/src/api.ts`                          | Shared Axios client and backend URL configuration |
+| `frontend/src/Home.tsx`                        | Feed, current user, deletion, and logout          |
+| `frontend/src/New.tsx`, `Edit.tsx`, `Show.tsx` | Post creation, editing, and detail views          |
+| `frontend/src/LoginPage.tsx`, `signup.tsx`     | Authentication forms                              |
+| `frontend/vercel.json`                         | SPA routing rewrite                               |
+| `backend/src/index.ts`                         | Express setup, middleware, and server startup     |
+| `backend/src/config/db.ts`                     | MongoDB connection                                |
+| `backend/src/controllers/authController.ts`    | Signup, login, and logout handlers                |
+| `backend/src/middlewares/authMiddleware.ts`    | Token verification and authenticated user lookup  |
+| `backend/src/models/`                          | User and post schemas                             |
+| `backend/src/routes/authRoutes.ts`             | Authentication endpoints                          |
+| `backend/src/routes/postRoutes.ts`             | Active post endpoints and ownership checks        |
+| `backend/src/util/secretToken.ts`              | JWT creation                                      |
+| `backend/src/types/express.d.ts`               | Express request type augmentation                 |
 
 ## Run Locally
 
@@ -134,14 +176,14 @@ Open the local URL printed by Vite, normally `http://localhost:5173`. Keep `FRON
 
 Run each command from the directory shown.
 
-| Directory | Command | Purpose |
-| --- | --- | --- |
-| `frontend` | `npm run dev` | Start the Vite development server |
-| `frontend` | `npm run build` | Type-check and create the production build |
-| `frontend` | `npm run preview` | Preview the built frontend locally |
-| `frontend` | `npm run lint` | Run ESLint |
-| `backend` | `npm run dev` | Run the API with file watching |
-| `backend` | `npm start` | Run the API through tsx |
+| Directory  | Command           | Purpose                                    |
+| ---------- | ----------------- | ------------------------------------------ |
+| `frontend` | `npm run dev`     | Start the Vite development server          |
+| `frontend` | `npm run build`   | Type-check and create the production build |
+| `frontend` | `npm run preview` | Preview the built frontend locally         |
+| `frontend` | `npm run lint`    | Run ESLint                                 |
+| `backend`  | `npm run dev`     | Run the API with file watching             |
+| `backend`  | `npm start`       | Run the API through tsx                    |
 
 The backend currently runs TypeScript directly through `tsx`; it does not define a separate build script. Neither package currently defines a test script.
 
@@ -149,16 +191,16 @@ The backend currently runs TypeScript directly through `tsx`; it does not define
 
 Paths below are relative to the backend origin. Protected endpoints require the `token` cookie.
 
-| Method | Endpoint | Access | Purpose / JSON body |
-| --- | --- | --- | --- |
-| POST | `/api/auth/signup` | Public | Create an account: `{ "username": "...", "email": "...", "password": "..." }` |
-| POST | `/api/auth/login` | Public | Log in: `{ "email": "...", "password": "..." }` |
-| POST | `/api/auth/logout` | No authentication middleware | Clear the authentication cookie |
-| GET | `/api/auth/me` | Signed in | Return the current user's ID, username, and email |
-| GET | `/api/posts` | Signed in | Return all posts |
-| POST | `/api/posts` | Signed in | Create a post: `{ "content": "..." }` |
-| PUT | `/api/posts/:id` | Post author | Update a post: `{ "content": "..." }` |
-| DELETE | `/api/posts/:id` | Post author | Delete a post |
+| Method | Endpoint           | Access                       | Purpose / JSON body                                                           |
+| ------ | ------------------ | ---------------------------- | ----------------------------------------------------------------------------- |
+| POST   | `/api/auth/signup` | Public                       | Create an account: `{ "username": "...", "email": "...", "password": "..." }` |
+| POST   | `/api/auth/login`  | Public                       | Log in: `{ "email": "...", "password": "..." }`                               |
+| POST   | `/api/auth/logout` | No authentication middleware | Clear the authentication cookie                                               |
+| GET    | `/api/auth/me`     | Signed in                    | Return the current user's ID, username, and email                             |
+| GET    | `/api/posts`       | Signed in                    | Return all posts                                                              |
+| POST   | `/api/posts`       | Signed in                    | Create a post: `{ "content": "..." }`                                         |
+| PUT    | `/api/posts/:id`   | Post author                  | Update a post: `{ "content": "..." }`                                         |
+| DELETE | `/api/posts/:id`   | Post author                  | Delete a post                                                                 |
 
 The server assigns a new post's author from the authenticated user. The current detail screen receives the selected post through React Router state; the API does not yet expose `GET /api/posts/:id`.
 
@@ -177,20 +219,20 @@ The server assigns a new post's author from the authenticated user. The current 
 
 Use a Node web service connected to this repository:
 
-| Setting | Value |
-| --- | --- |
-| Root directory | `backend` |
-| Build command | `npm ci` |
-| Start command | `npm start` |
+| Setting        | Value       |
+| -------------- | ----------- |
+| Root directory | `backend`   |
+| Build command  | `npm ci`    |
+| Start command  | `npm start` |
 
 Set these environment variables in Render:
 
-| Variable | Value |
-| --- | --- |
-| `MONGO_URL` | Your hosted MongoDB connection string |
-| `TOKEN_KEY` | A private, randomly generated signing secret |
-| `FRONTEND_URL` | `https://quora-clone-lemon-two.vercel.app` |
-| `NODE_ENV` | `production` |
+| Variable       | Value                                        |
+| -------------- | -------------------------------------------- |
+| `MONGO_URL`    | Your hosted MongoDB connection string        |
+| `TOKEN_KEY`    | A private, randomly generated signing secret |
+| `FRONTEND_URL` | `https://quora-clone-lemon-two.vercel.app`   |
+| `NODE_ENV`     | `production`                                 |
 
 The server reads `PORT` from the environment and falls back to `3000`. Use a database reachable from Render; a database running only on your laptop is not available to the hosted backend.
 
@@ -198,13 +240,13 @@ These commands match the repository's package scripts. See [Render's Express dep
 
 ### Frontend — Vercel
 
-| Setting | Value |
-| --- | --- |
-| Root directory | `frontend` |
-| Framework preset | Vite |
-| Build command | `npm run build` |
-| Output directory | `dist` |
-| `VITE_API_URL` | Your public Render backend origin, without `/api` |
+| Setting          | Value                                             |
+| ---------------- | ------------------------------------------------- |
+| Root directory   | `frontend`                                        |
+| Framework preset | Vite                                              |
+| Build command    | `npm run build`                                   |
+| Output directory | `dist`                                            |
+| `VITE_API_URL`   | Your public Render backend origin, without `/api` |
 
 Set `VITE_API_URL` before building and redeploy after changing it. Production builds display a configuration error if it is missing. The existing `frontend/vercel.json` rewrite serves the SPA for client-side routes. See [Vercel's Vite guide](https://vercel.com/docs/frameworks/frontend/vite).
 
