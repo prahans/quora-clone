@@ -33,15 +33,6 @@ A full-stack, Quora-inspired posting application built with React, TypeScript, N
       <img src="./screenshots/show.png" alt="Form" width="350">
     </td>
   </tr>
-
-  <tr>
-    <td align="center">
-      <img src="./screenshots/navbar.png" alt="Navbar" width="350">
-    </td>
-    <td align="center">
-      <img src="./screenshots/footer.png" alt="Footer" width="350">
-    </td>
-  </tr>
 </table>
 
 ---
