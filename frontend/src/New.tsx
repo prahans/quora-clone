@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { api } from "./api";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 function New() {
   const navigate = useNavigate();
@@ -77,7 +77,6 @@ function New() {
       >
         Go back
       </button>
-      <ToastContainer />
     </>
   );
 }

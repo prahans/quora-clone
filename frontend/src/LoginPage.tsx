@@ -2,7 +2,7 @@ import axios from "axios";
 import { api } from "./api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 function Login() {
   const navigate = useNavigate();
@@ -101,7 +101,6 @@ function Login() {
       >
         signup instead
       </button>
-      <ToastContainer />
     </main>
   );
 }

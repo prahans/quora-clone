@@ -2,7 +2,7 @@ import axios from "axios";
 import { api } from "./api";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 type Post = {
   _id: string;
@@ -178,7 +178,6 @@ function Home() {
       >
         Create a new post
       </button>
-      <ToastContainer />
     </>
   );
 }
