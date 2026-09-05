@@ -52,7 +52,12 @@ function Home() {
       try {
         const response = await api.get("/api/auth/me");
         setCurrentUser(response.data.user);
-        toast.success("welcome back " + response.data.user.username);
+        toast.success("welcome back " + response.data.user.username, {
+          position: "top-right",
+          autoClose: 2500,
+          hideProgressBar: true,
+          theme: "light",
+        });
       } catch {
         setCurrentUser(null);
       }
@@ -74,7 +79,12 @@ function Home() {
       setPosts((currentPosts) =>
         currentPosts.filter((post) => post._id !== id),
       );
-      toast.success("Post deleted successfully!");
+      toast.success("Post deleted successfully!", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: true,
+        theme: "light",
+      });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         alert(error.response?.data?.message || "Failed to delete post.");
