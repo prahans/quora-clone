@@ -1,6 +1,7 @@
 import { api } from "./api";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 type PostProps = {
   _id: string;
@@ -39,6 +40,12 @@ function Edit() {
 
       // 4. Redirect the user back to the feed page after success
       navigate("/");
+      toast.success("Post updated successfully!", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: true,
+        theme: "light",
+      });
     } catch {
       alert("Failed to submit post. Check if your server is running.");
     } finally {
@@ -69,6 +76,7 @@ function Edit() {
       <button onClick={() => navigate(-1)} disabled={isSubmitting}>
         back
       </button>
+      <ToastContainer />
     </>
   );
 }
