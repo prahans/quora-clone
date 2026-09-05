@@ -35,7 +35,7 @@ function Login() {
 
       // Login successful
       toast.success(`Welcome back, ${response.data.user.username}!`, {
-        position: "top-right",
+        position: "top-left",
         autoClose: 2500,
         hideProgressBar: true,
         theme: "light",
