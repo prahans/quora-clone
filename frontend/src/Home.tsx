@@ -2,7 +2,6 @@ import axios from "axios";
 import { api } from "./api";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
 
 type Post = {
   _id: string;
@@ -52,12 +51,6 @@ function Home() {
       try {
         const response = await api.get("/api/auth/me");
         setCurrentUser(response.data.user);
-        toast.success("welcome back " + response.data.user.username, {
-          position: "top-right",
-          autoClose: 2500,
-          hideProgressBar: true,
-          theme: "light",
-        });
       } catch {
         setCurrentUser(null);
       }
@@ -79,12 +72,6 @@ function Home() {
       setPosts((currentPosts) =>
         currentPosts.filter((post) => post._id !== id),
       );
-      toast.success("Post deleted successfully!", {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: true,
-        theme: "light",
-      });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         alert(error.response?.data?.message || "Failed to delete post.");
@@ -179,7 +166,6 @@ function Home() {
       >
         Create a new post
       </button>
-      <ToastContainer />
     </>
   );
 }
