@@ -28,14 +28,14 @@ function Login() {
     try {
       setIsLoggingIn(true);
 
-      await api.post("/api/auth/login", {
+      const response = await api.post("/api/auth/login", {
         email: email.trim(),
         password,
       });
 
       // Login successful
-      toast.success("Logged in successfully!", {
-        position: "top-right",
+      toast.success(`Welcome back, ${response.data.user.username}!`, {
+        position: "top-left",
         autoClose: 2500,
         hideProgressBar: true,
         theme: "light",
