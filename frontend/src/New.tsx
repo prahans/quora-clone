@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { api } from "./api";
+import { ToastContainer, toast } from "react-toastify";
 
 function New() {
   const navigate = useNavigate();
@@ -28,6 +29,12 @@ function New() {
       });
 
       navigate("/");
+      toast.success("Post created successfully!", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: true,
+        theme: "light",
+      });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "Failed to create post.");
@@ -70,6 +77,7 @@ function New() {
       >
         Go back
       </button>
+      <ToastContainer />
     </>
   );
 }
