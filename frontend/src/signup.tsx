@@ -36,13 +36,13 @@ function Signup() {
       });
 
       // Signup successful
-      navigate("/");
       toast.success("Logged in successfully!", {
         position: "top-right",
         autoClose: 2500,
         hideProgressBar: true,
         theme: "light",
       });
+      navigate("/");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(

@@ -28,13 +28,13 @@ function New() {
         content: content.trim(),
       });
 
-      navigate("/");
       toast.success("Post created successfully!", {
         position: "top-right",
         autoClose: 2500,
         hideProgressBar: true,
         theme: "light",
       });
+      navigate("/");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "Failed to create post.");

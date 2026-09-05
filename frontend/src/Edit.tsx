@@ -39,15 +39,20 @@ function Edit() {
       });
 
       // 4. Redirect the user back to the feed page after success
-      navigate("/");
       toast.success("Post updated successfully!", {
         position: "top-right",
         autoClose: 2500,
         hideProgressBar: true,
         theme: "light",
       });
+      navigate("/");
     } catch {
-      alert("Failed to submit post. Check if your server is running.");
+      toast.error("Failed to update post. Check if your server is running.", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: true,
+        theme: "light",
+      });
     } finally {
       setIsSubmitting(false);
     }

@@ -34,13 +34,13 @@ function Login() {
       });
 
       // Login successful
-      navigate("/");
       toast.success("Logged in successfully!", {
         position: "top-right",
         autoClose: 2500,
         hideProgressBar: true,
         theme: "light",
       });
+      navigate("/");
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(error.response?.data?.message || "Invalid email or password.");
