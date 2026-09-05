@@ -2,6 +2,7 @@ import axios from "axios";
 import { api } from "./api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 function Signup() {
   const navigate = useNavigate();
@@ -36,6 +37,12 @@ function Signup() {
 
       // Signup successful
       navigate("/");
+      toast.success("Logged in successfully!", {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: true,
+        theme: "light",
+      });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(
@@ -122,6 +129,7 @@ function Signup() {
       >
         Login
       </button>
+      <ToastContainer />
     </main>
   );
 }
