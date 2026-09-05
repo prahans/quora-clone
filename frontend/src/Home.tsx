@@ -98,6 +98,12 @@ function Home() {
       await api.post("/api/auth/logout");
 
       navigate("/login");
+      toast.success(`Goodbye, ${currentUser?.username}!`, {
+        position: "top-right",
+        autoClose: 2500,
+        hideProgressBar: true,
+        theme: "light",
+      });
     } catch {
       setError("Failed to log out. Please try again.");
     }
