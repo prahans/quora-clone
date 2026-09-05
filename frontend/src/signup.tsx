@@ -36,7 +36,7 @@ function Signup() {
       });
 
       // Signup successful
-      toast.success("Logged in successfully!", {
+      toast.success("Account created successfully!", {
         position: "top-right",
         autoClose: 2500,
         hideProgressBar: true,

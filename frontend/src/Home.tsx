@@ -52,6 +52,12 @@ function Home() {
       try {
         const response = await api.get("/api/auth/me");
         setCurrentUser(response.data.user);
+        toast.success(`Welcome back, ${response.data.user.username}!`, {
+          position: "top-left",
+          autoClose: 2500,
+          hideProgressBar: true,
+          theme: "light",
+        });
       } catch {
         setCurrentUser(null);
       }
