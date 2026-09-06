@@ -1,24 +1,40 @@
 import { api } from "./api";
-import { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-
-type PostProps = {
-  _id: string;
-  username: string;
-  content: string;
-};
+import type { Post } from "./types/post";
+import axios from "axios";
 
 function Edit() {
-  const location = useLocation();
-
-  // Cast the state to your custom type safely
-  const state = location.state as { post: PostProps } | null;
-  const post = state?.post;
-
-  // 1. Set up local state to capture input values
-  const [content, setContent] = useState(post?.content);
+  const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
+  const [post, setPost] = useState<Post | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [content, setContent] = useState(post?.content || "");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        setIsLoading(true);
+        setError("");
+
+        const response = await api.get<Post>(`/api/posts/${id}`);
+        setPost(response.data);
+      } catch (error) {
+        if (axios.isAxiosError(error)) {
+          setError(error.response?.data?.message || "Failed to load post.");
+        } else {
+          setError("Something went wrong.");
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [id]);
 
   // 2. Handle the submission event asynchronously
   const handleSubmit = async (e: React.FormEvent) => {
@@ -58,7 +74,19 @@ function Edit() {
     }
   };
 
-  const navigate = useNavigate();
+  if (isLoading) {
+    return <h2>Loading posts...</h2>;
+  }
+
+  if (error) {
+    return (
+      <>
+        <h2>{error}</h2>
+        <button onClick={() => navigate("/login")}>Go to Login</button>
+      </>
+    );
+  }
+
   return (
     <>
       <h2>Edit your post</h2>
