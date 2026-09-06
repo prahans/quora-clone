@@ -22,9 +22,9 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route index element={<Home />} />
-        <Route path="/edit" element={<Edit />} />
+        <Route path="/edit/:id" element={<Edit />} />
         <Route path="/new" element={<New />} />
-        <Route path="/show" element={<Show />} />
+        <Route path="/show/:id" element={<Show />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Routes>

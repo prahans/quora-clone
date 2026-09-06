@@ -3,13 +3,7 @@ import { api } from "./api";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-
-type Post = {
-  _id: string;
-  author: string;
-  username: string;
-  content: string;
-};
+import type { Post } from "./types/post";
 
 type CurrentUser = {
   id: string;
@@ -146,25 +140,13 @@ function Home() {
 
             <p>{post.content}</p>
 
-            <button
-              onClick={() =>
-                navigate("/show", {
-                  state: { post },
-                })
-              }
-            >
+            <button onClick={() => navigate(`/show/${post._id}`)}>
               See details
             </button>
 
             {currentUser?.id === post.author && (
               <>
-                <button
-                  onClick={() =>
-                    navigate("/edit", {
-                      state: { post },
-                    })
-                  }
-                >
+                <button onClick={() => navigate(`/edit/${post._id}`)}>
                   Edit
                 </button>
                 <button onClick={() => handleDelete(post._id)}>Delete</button>
