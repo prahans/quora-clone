@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import type { Post } from "./types/post";
-import { api } from "./api/api";
+import type { Post } from "../types/post";
+import { api } from "../api";
 import axios from "axios";
 
 function PostDetailsPage() {

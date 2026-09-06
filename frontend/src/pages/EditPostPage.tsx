@@ -1,8 +1,8 @@
-import { api } from "./api/api";
+import { api } from "../api";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import type { Post } from "./types/post";
+import type { Post } from "../types/post";
 import axios from "axios";
 
 function EditPostPage() {

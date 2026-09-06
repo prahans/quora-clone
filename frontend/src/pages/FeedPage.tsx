@@ -1,9 +1,9 @@
 import axios from "axios";
-import { api } from "./api/api";
+import { api } from "../api";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import type { Post } from "./types/post";
+import type { Post } from "../types/post";
 
 type CurrentUser = {
   id: string;

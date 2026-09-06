@@ -1,16 +1,17 @@
 import axios from "axios";
-import { api } from "./api/api";
+import { api } from "../api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-function Login() {
+function SignupPage() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [isSigningUp, setIsSigningUp] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -20,21 +21,22 @@ function Login() {
     setError("");
 
     // Basic validation
-    if (!email.trim() || !password.trim()) {
-      setError("Please enter your email and password.");
+    if (!email.trim() || !username.trim() || !password.trim()) {
+      setError("Please fill in all fields.");
       return;
     }
 
     try {
-      setIsLoggingIn(true);
+      setIsSigningUp(true);
 
-      const response = await api.post("/api/auth/login", {
+      await api.post("/api/auth/signup", {
         email: email.trim(),
+        username: username.trim(),
         password,
       });
 
-      // Login successful
-      toast.success(`Welcome back, ${response.data.user.username}!`, {
+      // Signup successful
+      toast.success("Account created successfully!", {
         position: "top-right",
         autoClose: 2500,
         hideProgressBar: true,
@@ -46,22 +48,22 @@ function Login() {
         setError(
           !error.response
             ? "Unable to connect to the server. Please try again later."
-            : error.response.data?.message ||
-                "Unable to log in. Please try again.",
+            : error.response.data?.message || "Failed to create your account.",
         );
       } else {
         setError("Something went wrong. Please try again.");
       }
     } finally {
-      setIsLoggingIn(false);
+      setIsSigningUp(false);
     }
   };
 
   return (
     <main>
-      <h1>Login</h1>
+      <h1>Create Account</h1>
 
       <form onSubmit={handleSubmit}>
+        {/* Email */}
         <div>
           <label htmlFor="email">Email</label>
 
@@ -73,10 +75,27 @@ function Login() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="Enter your email"
             autoComplete="email"
-            disabled={isLoggingIn}
+            disabled={isSigningUp}
           />
         </div>
 
+        {/* Username */}
+        <div>
+          <label htmlFor="username">Username</label>
+
+          <input
+            id="username"
+            name="username"
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Choose a username"
+            autoComplete="username"
+            disabled={isSigningUp}
+          />
+        </div>
+
+        {/* Password */}
         <div>
           <label htmlFor="password">Password</label>
 
@@ -86,28 +105,34 @@ function Login() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            autoComplete="current-password"
-            disabled={isLoggingIn}
+            placeholder="Create a password"
+            autoComplete="new-password"
+            disabled={isSigningUp}
           />
         </div>
 
+        {/* Error */}
         {error && <p>{error}</p>}
 
-        <button type="submit" disabled={isLoggingIn}>
-          {isLoggingIn ? "Logging in..." : "Login"}
+        {/* Submit */}
+        <button type="submit" disabled={isSigningUp}>
+          {isSigningUp ? "Creating account..." : "Sign up"}
         </button>
       </form>
 
+      <br />
+
+      <p>Already have an account?</p>
+
       <button
         type="button"
-        onClick={() => navigate("/signup")}
-        disabled={isLoggingIn}
+        onClick={() => navigate("/login")}
+        disabled={isSigningUp}
       >
-        signup instead
+        Login
       </button>
     </main>
   );
 }
 
-export default Login;
+export default SignupPage;

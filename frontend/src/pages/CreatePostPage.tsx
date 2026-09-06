@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { api } from "./api/api";
+import { api } from "../api";
 import { toast } from "react-toastify";
 
 function CreatePostPage() {

@@ -1,12 +1,12 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import FeedPage from "./FeedPage";
-import EditPostPage from "./EditPostPage";
-import CreatePostPage from "./CreatePostPage";
-import PostDetailsPage from "./PostDetailsPage";
-import LoginPage from "./LoginPage";
-import SignupPage from "./SignupPage";
-import { apiConfigurationError } from "./api/api";
+import FeedPage from "./pages/FeedPage";
+import EditPostPage from "./pages/EditPostPage";
+import CreatePostPage from "./pages/CreatePostPage";
+import PostDetailsPage from "./pages/PostDetailsPage";
+import LoginPage from "./pages/LoginPage";
+import SignupPage from "./pages/SignupPage";
+import { apiConfigurationError } from "./api";
 
 function App() {
   if (apiConfigurationError) {
