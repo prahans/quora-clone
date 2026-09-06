@@ -18,7 +18,9 @@ function EditPostPage() {
     return (
       <>
         <h2>{getErrorMessage(error, "Failed to load post.")}</h2>
-        <button onClick={() => void refetch()} disabled={isFetching}>Try again</button>
+        <button onClick={() => void refetch()} disabled={isFetching}>
+          Try again
+        </button>
         <button onClick={() => navigate("/login")}>Go to Login</button>
       </>
     );
@@ -28,7 +30,12 @@ function EditPostPage() {
   return (
     <>
       {error && (
-        <p role="alert">{getErrorMessage(error, "Unable to refresh this post. Your draft is preserved.")}</p>
+        <p role="alert">
+          {getErrorMessage(
+            error,
+            "Unable to refresh this post. Your draft is preserved.",
+          )}
+        </p>
       )}
       <EditPostForm key={post._id} post={post} />
     </>
@@ -40,9 +47,11 @@ function EditPostForm({ post }: { post: Post }) {
   const updatePost = useUpdatePost();
   const [content, setContent] = useState(post.content);
   const [validationError, setValidationError] = useState("");
-  const error = validationError || (updatePost.error
-    ? getErrorMessage(updatePost.error, "Failed to update post.")
-    : "");
+  const error =
+    validationError ||
+    (updatePost.error
+      ? getErrorMessage(updatePost.error, "Failed to update post.")
+      : "");
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -76,8 +85,8 @@ function EditPostForm({ post }: { post: Post }) {
       <p>post id : {post._id}</p>
       <form onSubmit={handleSubmit}>
         <textarea
-          rows={10}
-          cols={35}
+          rows={15}
+          cols={40}
           name="content"
           value={content}
           onChange={(event) => setContent(event.target.value)}
@@ -90,7 +99,9 @@ function EditPostForm({ post }: { post: Post }) {
           </button>
         )}
       </form>
-      <button onClick={() => navigate(-1)} disabled={updatePost.isPending}>back</button>
+      <button onClick={() => navigate(-1)} disabled={updatePost.isPending}>
+        back
+      </button>
     </>
   );
 }

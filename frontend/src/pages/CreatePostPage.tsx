@@ -11,9 +11,11 @@ function CreatePostPage() {
   const [content, setContent] = useState("");
   const [validationError, setValidationError] = useState("");
   const isSubmitting = createPost.isPending;
-  const error = validationError || (createPost.error
-    ? getErrorMessage(createPost.error, "Failed to create post.")
-    : "");
+  const error =
+    validationError ||
+    (createPost.error
+      ? getErrorMessage(createPost.error, "Failed to create post.")
+      : "");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -49,6 +51,8 @@ function CreatePostPage() {
       <form onSubmit={handleSubmit}>
         <textarea
           name="content"
+          rows={15}
+          cols={40}
           placeholder="Write your post..."
           value={content}
           onChange={(e) => setContent(e.target.value)}
