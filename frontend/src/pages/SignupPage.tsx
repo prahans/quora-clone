@@ -1,10 +1,12 @@
 import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 import { api } from "../api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function SignupPage() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -36,6 +38,7 @@ function SignupPage() {
       });
 
       // Signup successful
+      queryClient.clear();
       toast.success("Account created successfully!", {
         position: "top-right",
         autoClose: 2500,

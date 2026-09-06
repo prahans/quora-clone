@@ -1,4 +1,6 @@
 import { api } from "../api";
+import { useQueryClient } from "@tanstack/react-query";
+import { postsQueryKey } from "../hooks/usePosts";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -6,6 +8,7 @@ import type { Post } from "../types/post";
 import axios from "axios";
 
 function EditPostPage() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<Post | null>(null);
@@ -55,6 +58,7 @@ function EditPostPage() {
       await api.put(`/api/posts/${id}`, {
         content: content,
       });
+      await queryClient.invalidateQueries({ queryKey: postsQueryKey });
 
       // 4. Redirect the user back to the feed page after success
       toast.success("Post updated successfully!", {

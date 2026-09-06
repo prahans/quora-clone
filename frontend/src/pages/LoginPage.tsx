@@ -1,10 +1,12 @@
 import axios from "axios";
+import { useQueryClient } from "@tanstack/react-query";
 import { api } from "../api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 function Login() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -34,6 +36,7 @@ function Login() {
       });
 
       // Login successful
+      queryClient.clear();
       toast.success(`Welcome back, ${response.data.user.username}!`, {
         position: "top-right",
         autoClose: 2500,

@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { postsQueryKey } from "../hooks/usePosts";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { api } from "../api";
 import { toast } from "react-toastify";
 
 function CreatePostPage() {
+  const queryClient = useQueryClient();
   const navigate = useNavigate();
 
   const [content, setContent] = useState("");
@@ -27,6 +30,7 @@ function CreatePostPage() {
       await api.post("/api/posts", {
         content: content.trim(),
       });
+      await queryClient.invalidateQueries({ queryKey: postsQueryKey });
 
       toast.success("Post created successfully!", {
         position: "top-right",

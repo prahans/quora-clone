@@ -3,7 +3,9 @@ import { api } from "../api";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import type { Post } from "../types/post";
+import { useQueryClient } from "@tanstack/react-query";
+import { usePosts } from "../hooks/usePosts";
+import { useDeletePost } from "../hooks/useDeletePost";
 
 type CurrentUser = {
   id: string;
@@ -14,32 +16,11 @@ type CurrentUser = {
 function FeedPage() {
   const navigate = useNavigate();
 
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
+  const queryClient = useQueryClient();
+  const { data: posts = [], isPending, error, refetch, isFetching } = usePosts();
+  const deletePost = useDeletePost();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        setIsLoading(true);
-        setError("");
-
-        const response = await api.get<Post[]>("/api/posts");
-        setPosts(response.data);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          setError(error.response?.data?.message || "Failed to load posts.");
-        } else {
-          setError("Something went wrong.");
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchPosts();
-  }, []);
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -55,6 +36,7 @@ function FeedPage() {
   }, []);
 
   const handleDelete = async (id: string) => {
+    if (deletePost.isPending || isLoggingOut) return;
     const confirmed = window.confirm(
       "Are you sure you want to delete this post?",
     );
@@ -62,11 +44,7 @@ function FeedPage() {
     if (!confirmed) return;
 
     try {
-      await api.delete(`/api/posts/${id}`);
-
-      setPosts((currentPosts) =>
-        currentPosts.filter((post) => post._id !== id),
-      );
+      await deletePost.mutateAsync(id);
       toast.success("Post deleted successfully!", {
         position: "top-right",
         autoClose: 2500,
@@ -88,9 +66,11 @@ function FeedPage() {
   };
 
   const handleLogout = async () => {
+    if (isLoggingOut || deletePost.isPending) return;
     try {
+      setIsLoggingOut(true);
       await api.post("/api/auth/logout");
-
+      queryClient.clear();
       navigate("/login");
       toast.success(`Goodbye, ${currentUser?.username}!`, {
         position: "top-right",
@@ -99,18 +79,27 @@ function FeedPage() {
         theme: "light",
       });
     } catch {
-      setError("Failed to log out. Please try again.");
+      toast.error("Failed to log out. Please try again.");
+    } finally {
+      setIsLoggingOut(false);
     }
   };
 
-  if (isLoading) {
+  if (isPending) {
     return <h2>Loading posts...</h2>;
   }
 
   if (error) {
     return (
       <>
-        <h2>{error}</h2>
+        <h2>
+          {axios.isAxiosError(error)
+            ? error.response?.data?.message || "Failed to load posts. Please try again."
+            : "Something went wrong loading posts."}
+        </h2>
+        <button onClick={() => void refetch()} disabled={isFetching}>
+          {isFetching ? "Retrying..." : "Try again"}
+        </button>
         <button onClick={() => navigate("/login")}>Go to Login</button>
       </>
     );
@@ -128,7 +117,9 @@ function FeedPage() {
         }}
       >
         <h3>{currentUser?.username}</h3>
-        <button onClick={handleLogout}>Logout</button>
+        <button onClick={handleLogout} disabled={isLoggingOut || deletePost.isPending}>
+          {isLoggingOut ? "Logging out..." : "Logout"}
+        </button>
       </div>
 
       {posts.length === 0 ? (
@@ -149,7 +140,14 @@ function FeedPage() {
                 <button onClick={() => navigate(`/edit/${post._id}`)}>
                   Edit
                 </button>
-                <button onClick={() => handleDelete(post._id)}>Delete</button>
+                <button
+                  onClick={() => handleDelete(post._id)}
+                  disabled={deletePost.isPending || isLoggingOut}
+                >
+                  {deletePost.isPending && deletePost.variables === post._id
+                    ? "Deleting..."
+                    : "Delete"}
+                </button>
               </>
             )}
           </div>
