@@ -1,39 +1,19 @@
-import axios from "axios";
-import { api } from "../api";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useQueryClient } from "@tanstack/react-query";
 import { usePosts } from "../hooks/usePosts";
 import { useDeletePost } from "../hooks/useDeletePost";
-
-type CurrentUser = {
-  id: string;
-  username: string;
-  email: string;
-};
+import { useCurrentUser, useLogout } from "../hooks/useAuth";
+import { getErrorMessage } from "../utils/getErrorMessage";
 
 function FeedPage() {
   const navigate = useNavigate();
 
-  const queryClient = useQueryClient();
-  const { data: posts = [], isPending, error, refetch, isFetching } = usePosts();
+  const currentUserQuery = useCurrentUser();
+  const currentUser = currentUserQuery.data;
+  const { data: posts = [], isPending, error, isRefetchError, refetch, isFetching } = usePosts(Boolean(currentUser));
   const deletePost = useDeletePost();
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
-
-  useEffect(() => {
-    const fetchCurrentUser = async () => {
-      try {
-        const response = await api.get("/api/auth/me");
-        setCurrentUser(response.data.user);
-      } catch {
-        setCurrentUser(null);
-      }
-    };
-
-    fetchCurrentUser();
-  }, []);
+  const logout = useLogout();
+  const isLoggingOut = logout.isPending;
 
   const handleDelete = async (id: string) => {
     if (deletePost.isPending || isLoggingOut) return;
@@ -52,25 +32,14 @@ function FeedPage() {
         theme: "light",
       });
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        toast.error(error.response?.data?.message || "Failed to delete post.", {
-          position: "top-right",
-          autoClose: 2500,
-          hideProgressBar: true,
-          theme: "light",
-        });
-      } else {
-        alert("Something went wrong.");
-      }
+      toast.error(getErrorMessage(error, "Failed to delete post."));
     }
   };
 
   const handleLogout = async () => {
     if (isLoggingOut || deletePost.isPending) return;
     try {
-      setIsLoggingOut(true);
-      await api.post("/api/auth/logout");
-      queryClient.clear();
+      await logout.mutateAsync();
       navigate("/login");
       toast.success(`Goodbye, ${currentUser?.username}!`, {
         position: "top-right",
@@ -78,24 +47,40 @@ function FeedPage() {
         hideProgressBar: true,
         theme: "light",
       });
-    } catch {
-      toast.error("Failed to log out. Please try again.");
-    } finally {
-      setIsLoggingOut(false);
+    } catch (error) {
+      toast.error(getErrorMessage(error, "Failed to log out. Please try again."));
     }
   };
+
+  if (currentUserQuery.isPending) return <h2>Loading account...</h2>;
+
+  if (currentUserQuery.error && !currentUser) {
+    return (
+      <>
+        <h2>{getErrorMessage(currentUserQuery.error, "Failed to load your account.")}</h2>
+        <button onClick={() => void currentUserQuery.refetch()} disabled={currentUserQuery.isFetching}>Try again</button>
+      </>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <>
+        <h2>Please log in to view posts.</h2>
+        <button onClick={() => navigate("/login")}>Go to Login</button>
+      </>
+    );
+  }
 
   if (isPending) {
     return <h2>Loading posts...</h2>;
   }
 
-  if (error) {
+  if (error && !isRefetchError) {
     return (
       <>
         <h2>
-          {axios.isAxiosError(error)
-            ? error.response?.data?.message || "Failed to load posts. Please try again."
-            : "Something went wrong loading posts."}
+          {getErrorMessage(error, "Failed to load posts. Please try again.")}
         </h2>
         <button onClick={() => void refetch()} disabled={isFetching}>
           {isFetching ? "Retrying..." : "Try again"}
@@ -108,6 +93,11 @@ function FeedPage() {
   return (
     <>
       <h1>Quora Posts</h1>
+      {currentUserQuery.error && <p role="alert">{getErrorMessage(currentUserQuery.error, "Unable to refresh your account.")}</p>}
+      {error && <p role="alert">{getErrorMessage(error, "Unable to refresh posts.")}</p>}
+      <button onClick={() => void refetch()} disabled={isFetching || deletePost.isPending || isLoggingOut}>
+        {isFetching ? "Refreshing..." : "Refresh posts"}
+      </button>
       <div
         style={{
           display: "flex",
@@ -155,13 +145,7 @@ function FeedPage() {
       )}
 
       <br />
-      <button
-        onClick={() =>
-          navigate("/new", {
-            state: { username: currentUser?.username || "" },
-          })
-        }
-      >
+      <button onClick={() => navigate("/new")}>
         Create a new post
       </button>
     </>

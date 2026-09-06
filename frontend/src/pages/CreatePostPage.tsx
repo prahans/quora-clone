@@ -1,36 +1,34 @@
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
-import { postsQueryKey } from "../hooks/usePosts";
+import { useCreatePost } from "../hooks/useCreatePost";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { api } from "../api";
+import { getErrorMessage } from "../utils/getErrorMessage";
 import { toast } from "react-toastify";
 
 function CreatePostPage() {
-  const queryClient = useQueryClient();
+  const createPost = useCreatePost();
   const navigate = useNavigate();
 
   const [content, setContent] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const [validationError, setValidationError] = useState("");
+  const isSubmitting = createPost.isPending;
+  const error = validationError || (createPost.error
+    ? getErrorMessage(createPost.error, "Failed to create post.")
+    : "");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    setError("");
+    if (isSubmitting) return;
+    setValidationError("");
+    createPost.reset();
 
     if (!content.trim()) {
-      setError("Please write something before submitting.");
+      setValidationError("Please write something before submitting.");
       return;
     }
 
     try {
-      setIsSubmitting(true);
-
-      await api.post("/api/posts", {
-        content: content.trim(),
-      });
-      await queryClient.invalidateQueries({ queryKey: postsQueryKey });
+      await createPost.mutateAsync(content.trim());
 
       toast.success("Post created successfully!", {
         position: "top-right",
@@ -39,14 +37,8 @@ function CreatePostPage() {
         theme: "light",
       });
       navigate("/");
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Failed to create post.");
-      } else {
-        setError("Something went wrong.");
-      }
-    } finally {
-      setIsSubmitting(false);
+    } catch {
+      // The mutation supplies the error rendered below.
     }
   };
 

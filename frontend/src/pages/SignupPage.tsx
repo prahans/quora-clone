@@ -1,64 +1,54 @@
-import axios from "axios";
-import { useQueryClient } from "@tanstack/react-query";
-import { api } from "../api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useSignup } from "../hooks/useAuth";
+import { getErrorMessage } from "../utils/getErrorMessage";
 
 function SignupPage() {
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const signup = useSignup();
 
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const [isSigningUp, setIsSigningUp] = useState(false);
-  const [error, setError] = useState("");
+  const [validationError, setValidationError] = useState("");
+  const isSigningUp = signup.isPending;
+  const error = validationError || (signup.error
+    ? getErrorMessage(signup.error, "Failed to create your account.")
+    : "");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isSigningUp) return;
 
-    // Clear previous error
-    setError("");
+    setValidationError("");
+    signup.reset();
 
     // Basic validation
     if (!email.trim() || !username.trim() || !password.trim()) {
-      setError("Please fill in all fields.");
+      setValidationError("Please fill in all fields.");
       return;
     }
 
-    try {
-      setIsSigningUp(true);
-
-      await api.post("/api/auth/signup", {
+    signup.mutate(
+      {
         email: email.trim(),
         username: username.trim(),
         password,
-      });
-
-      // Signup successful
-      queryClient.clear();
-      toast.success("Account created successfully!", {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: true,
-        theme: "light",
-      });
-      navigate("/");
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setError(
-          !error.response
-            ? "Unable to connect to the server. Please try again later."
-            : error.response.data?.message || "Failed to create your account.",
-        );
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-    } finally {
-      setIsSigningUp(false);
-    }
+      },
+      {
+        onSuccess: () => {
+          toast.success("Account created successfully!", {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: true,
+            theme: "light",
+          });
+          navigate("/");
+        },
+      },
+    );
   };
 
   return (

@@ -1,63 +1,52 @@
-import axios from "axios";
-import { useQueryClient } from "@tanstack/react-query";
-import { api } from "../api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { useLogin } from "../hooks/useAuth";
+import { getErrorMessage } from "../utils/getErrorMessage";
 
-function Login() {
-  const queryClient = useQueryClient();
+function LoginPage() {
   const navigate = useNavigate();
+  const login = useLogin();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const [error, setError] = useState("");
+  const [validationError, setValidationError] = useState("");
+  const isLoggingIn = login.isPending;
+  const error = validationError || (login.error
+    ? getErrorMessage(login.error, "Unable to log in. Please try again.")
+    : "");
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isLoggingIn) return;
 
-    // Clear previous error
-    setError("");
+    setValidationError("");
+    login.reset();
 
     // Basic validation
     if (!email.trim() || !password.trim()) {
-      setError("Please enter your email and password.");
+      setValidationError("Please enter your email and password.");
       return;
     }
 
-    try {
-      setIsLoggingIn(true);
-
-      const response = await api.post("/api/auth/login", {
+    login.mutate(
+      {
         email: email.trim(),
         password,
-      });
-
-      // Login successful
-      queryClient.clear();
-      toast.success(`Welcome back, ${response.data.user.username}!`, {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: true,
-        theme: "light",
-      });
-      navigate("/");
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        setError(
-          !error.response
-            ? "Unable to connect to the server. Please try again later."
-            : error.response.data?.message ||
-                "Unable to log in. Please try again.",
-        );
-      } else {
-        setError("Something went wrong. Please try again.");
-      }
-    } finally {
-      setIsLoggingIn(false);
-    }
+      },
+      {
+        onSuccess: (user) => {
+          toast.success(`Welcome back, ${user.username}!`, {
+            position: "top-right",
+            autoClose: 2500,
+            hideProgressBar: true,
+            theme: "light",
+          });
+          navigate("/");
+        },
+      },
+    );
   };
 
   return (
@@ -113,4 +102,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default LoginPage;

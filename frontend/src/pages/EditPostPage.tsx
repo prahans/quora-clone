@@ -1,66 +1,62 @@
-import { api } from "../api";
-import { useQueryClient } from "@tanstack/react-query";
-import { postsQueryKey } from "../hooks/usePosts";
-import { useEffect, useState } from "react";
+﻿import { useState, type FormEvent } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { usePost } from "../hooks/usePost";
+import { useUpdatePost } from "../hooks/useUpdatePost";
 import type { Post } from "../types/post";
-import axios from "axios";
+import { getErrorMessage } from "../utils/getErrorMessage";
 
 function EditPostPage() {
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [post, setPost] = useState<Post | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [content, setContent] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const { data: post, isPending, error, refetch, isFetching } = usePost(id);
 
-  useEffect(() => {
-    const fetchPost = async () => {
-      try {
-        setIsLoading(true);
-        setError("");
+  if (!id) return <h2>Post not found.</h2>;
+  if (isPending) return <h2>Loading post...</h2>;
 
-        const response = await api.get<Post>(`/api/posts/${id}`);
-        setPost(response.data);
-        setContent(response.data.content);
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          setError(error.response?.data?.message || "Failed to load post.");
-        } else {
-          setError("Something went wrong.");
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  if (!post) {
+    return (
+      <>
+        <h2>{getErrorMessage(error, "Failed to load post.")}</h2>
+        <button onClick={() => void refetch()} disabled={isFetching}>Try again</button>
+        <button onClick={() => navigate("/login")}>Go to Login</button>
+      </>
+    );
+  }
 
-    fetchPost();
-  }, [id]);
+  // A new post gets a new draft; background refreshes do not overwrite typing.
+  return (
+    <>
+      {error && (
+        <p role="alert">{getErrorMessage(error, "Unable to refresh this post. Your draft is preserved.")}</p>
+      )}
+      <EditPostForm key={post._id} post={post} />
+    </>
+  );
+}
 
-  // 2. Handle the submission event asynchronously
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault(); // Prevents HTML from trying to reload/redirect the entire page
+function EditPostForm({ post }: { post: Post }) {
+  const navigate = useNavigate();
+  const updatePost = useUpdatePost();
+  const [content, setContent] = useState(post.content);
+  const [validationError, setValidationError] = useState("");
+  const error = validationError || (updatePost.error
+    ? getErrorMessage(updatePost.error, "Failed to update post.")
+    : "");
 
-    if (!post || isLoading || isSubmitting) return;
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (updatePost.isPending) return;
+    setValidationError("");
+    updatePost.reset();
 
-    if (!content?.trim()) {
-      alert("Please fill out all fields.");
+    if (!content.trim()) {
+      setValidationError("Please write something before submitting.");
       return;
     }
 
     try {
-      setIsSubmitting(true);
-
-      // Save the edited content.
-      await api.put(`/api/posts/${id}`, {
-        content: content,
-      });
-      await queryClient.invalidateQueries({ queryKey: postsQueryKey });
-
-      // 4. Redirect the user back to the feed page after success
+      await updatePost.mutateAsync({ id: post._id, content: content.trim() });
       toast.success("Post updated successfully!", {
         position: "top-right",
         autoClose: 2500,
@@ -69,52 +65,32 @@ function EditPostPage() {
       });
       navigate("/");
     } catch {
-      toast.error("Failed to update post. Check if your server is running.", {
-        position: "top-right",
-        autoClose: 2500,
-        hideProgressBar: true,
-        theme: "light",
-      });
-    } finally {
-      setIsSubmitting(false);
+      // The mutation supplies the error rendered below.
     }
   };
-
-  if (isLoading) {
-    return <h2>Loading posts...</h2>;
-  }
-
-  if (error) {
-    return (
-      <>
-        <h2>{error}</h2>
-        <button onClick={() => navigate("/login")}>Go to Login</button>
-      </>
-    );
-  }
 
   return (
     <>
       <h2>Edit your post</h2>
-      <p>username : @{post?.username}</p>
-      <p>post id : {post?._id}</p>
+      <p>username : @{post.username}</p>
+      <p>post id : {post._id}</p>
       <form onSubmit={handleSubmit}>
         <textarea
           rows={10}
           cols={35}
           name="content"
           value={content}
-          onChange={(e) => setContent(e.target.value)}
-        ></textarea>
-        {content !== post?.content && (
-          <button disabled={isSubmitting}>
-            {isSubmitting ? "updating..." : "update post"}
+          onChange={(event) => setContent(event.target.value)}
+          disabled={updatePost.isPending}
+        />
+        {error && <p role="alert">{error}</p>}
+        {content !== post.content && (
+          <button disabled={updatePost.isPending}>
+            {updatePost.isPending ? "updating..." : "update post"}
           </button>
         )}
       </form>
-      <button onClick={() => navigate(-1)} disabled={isSubmitting}>
-        back
-      </button>
+      <button onClick={() => navigate(-1)} disabled={updatePost.isPending}>back</button>
     </>
   );
 }
