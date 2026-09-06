@@ -1,11 +1,11 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import Home from "./Home";
-import Edit from "./Edit";
-import New from "./New";
-import Show from "./Show";
-import Login from "./LoginPage";
-import Signup from "./signup";
+import FeedPage from "./FeedPage";
+import EditPostPage from "./EditPostPage";
+import CreatePostPage from "./CreatePostPage";
+import PostDetailsPage from "./PostDetailsPage";
+import LoginPage from "./LoginPage";
+import SignupPage from "./SignupPage";
 import { apiConfigurationError } from "./api/api";
 
 function App() {
@@ -21,12 +21,12 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route index element={<Home />} />
-        <Route path="/edit/:id" element={<Edit />} />
-        <Route path="/new" element={<New />} />
-        <Route path="/show/:id" element={<Show />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route index element={<FeedPage />} />
+        <Route path="/edit/:id" element={<EditPostPage />} />
+        <Route path="/new" element={<CreatePostPage />} />
+        <Route path="/show/:id" element={<PostDetailsPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
       </Routes>
       <ToastContainer />
     </BrowserRouter>

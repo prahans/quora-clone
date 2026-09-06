@@ -4,7 +4,7 @@ import axios from "axios";
 import { api } from "./api/api";
 import { toast } from "react-toastify";
 
-function New() {
+function CreatePostPage() {
   const navigate = useNavigate();
 
   const [content, setContent] = useState("");
@@ -81,4 +81,4 @@ function New() {
   );
 }
 
-export default New;
+export default CreatePostPage;

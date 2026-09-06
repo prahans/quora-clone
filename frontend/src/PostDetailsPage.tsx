@@ -4,7 +4,7 @@ import type { Post } from "./types/post";
 import { api } from "./api/api";
 import axios from "axios";
 
-function Show() {
+function PostDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -61,4 +61,4 @@ function Show() {
   );
 }
 
-export default Show;
+export default PostDetailsPage;

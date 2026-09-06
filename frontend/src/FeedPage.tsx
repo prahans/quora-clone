@@ -11,7 +11,7 @@ type CurrentUser = {
   email: string;
 };
 
-function Home() {
+function FeedPage() {
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState<Post[]>([]);
@@ -170,4 +170,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default FeedPage;

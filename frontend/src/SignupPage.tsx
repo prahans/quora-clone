@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
-function Signup() {
+function SignupPage() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -135,4 +135,4 @@ function Signup() {
   );
 }
 
-export default Signup;
+export default SignupPage;

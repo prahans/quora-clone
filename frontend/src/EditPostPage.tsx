@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import type { Post } from "./types/post";
 import axios from "axios";
 
-function Edit() {
+function EditPostPage() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [post, setPost] = useState<Post | null>(null);
@@ -115,4 +115,4 @@ function Edit() {
   );
 }
 
-export default Edit;
+export default EditPostPage;
