@@ -6,7 +6,7 @@ import New from "./New";
 import Show from "./Show";
 import Login from "./LoginPage";
 import Signup from "./signup";
-import { apiConfigurationError } from "./api";
+import { apiConfigurationError } from "./api/api";
 
 function App() {
   if (apiConfigurationError) {

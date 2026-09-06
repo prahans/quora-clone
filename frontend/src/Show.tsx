@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import type { Post } from "./types/post";
-import { api } from "./api";
+import { api } from "./api/api";
 import axios from "axios";
 
 function Show() {
@@ -35,7 +35,7 @@ function Show() {
     fetchPost();
   }, [id]);
 
-    if (isLoading) {
+  if (isLoading) {
     return <h2>Loading posts...</h2>;
   }
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { api } from "./api";
+import { api } from "./api/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -46,7 +46,8 @@ function Login() {
         setError(
           !error.response
             ? "Unable to connect to the server. Please try again later."
-            : error.response.data?.message || "Unable to log in. Please try again.",
+            : error.response.data?.message ||
+                "Unable to log in. Please try again.",
         );
       } else {
         setError("Something went wrong. Please try again.");

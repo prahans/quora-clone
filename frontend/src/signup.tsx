@@ -1,5 +1,5 @@
 import axios from "axios";
-import { api } from "./api";
+import { api } from "./api/api";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";

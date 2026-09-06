@@ -1,4 +1,4 @@
-import { api } from "./api";
+import { api } from "./api/api";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
