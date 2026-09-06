@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { type Request, type Response } from "express";
+import { isValidObjectId } from "mongoose";
 
 import Post from "../models/posts.ts";
 import { userVerification } from "../middlewares/authMiddleware.ts";
@@ -19,6 +20,30 @@ router.get("/", userVerification, async (req: Request, res: Response) => {
       success: false,
       message: "Internal server error",
     });
+  }
+});
+
+// GET ONE POST
+router.get("/:id", userVerification, async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  if (!isValidObjectId(id)) {
+    res.status(400).json({ success: false, message: "Invalid post ID" });
+    return;
+  }
+
+  try {
+    const post = await Post.findById(id);
+
+    if (!post) {
+      res.status(404).json({ success: false, message: "Post not found" });
+      return;
+    }
+
+    res.status(200).json(post);
+  } catch (error) {
+    console.error("Get post error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
 

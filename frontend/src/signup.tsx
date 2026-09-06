@@ -46,7 +46,9 @@ function Signup() {
     } catch (error) {
       if (axios.isAxiosError(error)) {
         setError(
-          error.response?.data?.message || "Failed to create your account.",
+          !error.response
+            ? "Unable to connect to the server. Please try again later."
+            : error.response.data?.message || "Failed to create your account.",
         );
       } else {
         setError("Something went wrong. Please try again.");

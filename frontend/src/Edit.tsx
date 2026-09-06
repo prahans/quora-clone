@@ -11,7 +11,7 @@ function Edit() {
   const [post, setPost] = useState<Post | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
-  const [content, setContent] = useState(post?.content || "");
+  const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -22,6 +22,7 @@ function Edit() {
 
         const response = await api.get<Post>(`/api/posts/${id}`);
         setPost(response.data);
+        setContent(response.data.content);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           setError(error.response?.data?.message || "Failed to load post.");
@@ -40,6 +41,8 @@ function Edit() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault(); // Prevents HTML from trying to reload/redirect the entire page
 
+    if (!post || isLoading || isSubmitting) return;
+
     if (!content?.trim()) {
       alert("Please fill out all fields.");
       return;
@@ -48,9 +51,8 @@ function Edit() {
     try {
       setIsSubmitting(true);
 
-      // 3. Make the POST network request directly to your Express API
-      await api.put(`/api/posts/${post?._id}`, {
-        username: post?.username,
+      // Save the edited content.
+      await api.put(`/api/posts/${id}`, {
         content: content,
       });
 

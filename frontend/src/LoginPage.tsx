@@ -43,7 +43,11 @@ function Login() {
       navigate("/");
     } catch (error) {
       if (axios.isAxiosError(error)) {
-        setError(error.response?.data?.message || "Invalid email or password.");
+        setError(
+          !error.response
+            ? "Unable to connect to the server. Please try again later."
+            : error.response.data?.message || "Unable to log in. Please try again.",
+        );
       } else {
         setError("Something went wrong. Please try again.");
       }
