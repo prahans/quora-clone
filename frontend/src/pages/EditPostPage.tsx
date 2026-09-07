@@ -81,7 +81,7 @@ function EditPostForm({ post }: { post: Post }) {
   return (
     <>
       <h2>Edit your post</h2>
-      <p>username : @{post.username}</p>
+      <p>username : @{post.author.username}</p>
       <p>post id : {post._id}</p>
       <form onSubmit={handleSubmit}>
         <textarea
