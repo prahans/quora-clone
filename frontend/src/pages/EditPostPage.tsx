@@ -64,7 +64,8 @@ function EditPostForm({ post }: { post: Post }) {
   const hasChanges =
     content !== originalContent || Boolean(selectedImage) || removeImage;
   const imageUrl =
-    selectedImage?.previewUrl || (!removeImage ? originalImage?.url : undefined);
+    selectedImage?.previewUrl ||
+    (!removeImage ? originalImage?.url : undefined);
   const error =
     validationError ||
     (updatePost.error
@@ -156,13 +157,10 @@ function EditPostForm({ post }: { post: Post }) {
           {imageUrl && (
             <img
               src={imageUrl}
-              alt={selectedImage ? "Selected image preview" : "Current post image"}
-              style={{
-                display: "block",
-                maxWidth: "500px",
-                width: "100%",
-                height: "auto",
-              }}
+              alt={
+                selectedImage ? "Selected image preview" : "Current post image"
+              }
+              className="post-img"
             />
           )}
           <label htmlFor="edit-image">
@@ -197,7 +195,9 @@ function EditPostForm({ post }: { post: Post }) {
           ) : originalImage?.url ? (
             <>
               {removeImage && (
-                <p>The current image will be removed when you update the post.</p>
+                <p>
+                  The current image will be removed when you update the post.
+                </p>
               )}
               <button
                 type="button"

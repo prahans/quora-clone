@@ -37,7 +37,7 @@ function PostDetailsPage() {
           <img
             src={post.image.url}
             alt={`Post by ${post.author.username}`}
-            style={{ maxWidth: "500px", width: "100%", height: "auto" }}
+            className="post-img"
           />
         )}
         <p>{post.content}</p>
