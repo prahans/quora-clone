@@ -152,14 +152,24 @@ function FeedPage() {
         posts.map((post) => (
           <div className="post" key={post._id}>
             <h3>@{post.author.username}</h3>
-
+            {post.image?.url && (
+              <img
+                src={post.image.url}
+                alt={`Post by ${post.author.username}`}
+                style={{
+                  maxWidth: "500px",
+                  width: "100%",
+                  height: "auto",
+                }}
+              />
+            )}
             <p>{post.content}</p>
 
             <button onClick={() => navigate(`/show/${post._id}`)}>
               See details
             </button>
 
-            {currentUser?.id === post.author && (
+            {currentUser?.id === post.author._id && (
               <>
                 <button onClick={() => navigate(`/edit/${post._id}`)}>
                   Edit
