@@ -1,5 +1,10 @@
 import { api } from "../api";
-import type { CreatePostInput, Post } from "../types/post";
+import type {
+  CreatePostInput,
+  Post,
+  UpdatePostInput,
+  UpdatePostResult,
+} from "../types/post";
 
 export async function getPosts(signal?: AbortSignal): Promise<Post[]> {
   const response = await api.get<Post[]>("/api/posts", { signal });
@@ -36,12 +41,23 @@ export async function createPost({
 export async function updatePost({
   id,
   content,
-}: {
-  id: string;
-  content: string;
-}): Promise<Post> {
-  const response = await api.put<{ post: Post }>(`/api/posts/${id}`, {
+  image,
+  removeImage,
+}: UpdatePostInput): Promise<UpdatePostResult> {
+  let payload: FormData | { content: string; removeImage?: boolean } = {
     content,
-  });
-  return response.data.post;
+    ...(removeImage !== undefined && { removeImage }),
+  };
+
+  if (image) {
+    payload = new FormData();
+    payload.append("content", content);
+    payload.append("image", image);
+    if (removeImage !== undefined) {
+      payload.append("removeImage", String(removeImage));
+    }
+  }
+
+  const response = await api.put<UpdatePostResult>(`/api/posts/${id}`, payload);
+  return response.data;
 }

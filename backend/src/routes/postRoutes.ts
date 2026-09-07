@@ -24,6 +24,6 @@ router.post("/", userVerification, uploadPostImage, createPost);
 router.delete("/:id", userVerification, deletePost);
 
 // UPDATE POST
-router.put("/:id", userVerification, updatePost);
+router.put("/:id", userVerification, uploadPostImage, updatePost);
 
 export default router;

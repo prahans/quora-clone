@@ -33,6 +33,13 @@ function PostDetailsPage() {
       <p>post id : {post._id}</p>
       <div className="post">
         <h3 style={{ fontStyle: "italic" }}>@{post.author.username}</h3>
+        {post.image?.url && (
+          <img
+            src={post.image.url}
+            alt={`Post by ${post.author.username}`}
+            style={{ maxWidth: "500px", width: "100%", height: "auto" }}
+          />
+        )}
         <p>{post.content}</p>
       </div>
       <button onClick={() => navigate(-1)}>go back</button>

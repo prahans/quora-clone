@@ -20,8 +20,7 @@ const subscriptions = [];
 
 const firstPost = {
   _id: "post-1",
-  author: "user-1",
-  username: "reader",
+  author: { _id: "user-1", username: "reader" },
   content: "Original post",
 };
 const secondPost = { ...firstPost, _id: "post-2", content: "Another post" };
@@ -172,8 +171,9 @@ test("create, edit, and delete update cached pages from responses without extra 
   const requests = mockRequests((config) => {
     if (config.method === "get") return [firstPost, secondPost];
     if (config.method === "post") {
-      assert.deepEqual(JSON.parse(config.data), { content: "Created post" });
-      return createdPost;
+      assert.ok(config.data instanceof FormData);
+      assert.equal(config.data.get("content"), "Created post");
+      return { post: createdPost };
     }
     if (config.method === "put") {
       assert.deepEqual(JSON.parse(config.data), { content: "Edited draft" });
@@ -186,7 +186,7 @@ test("create, edit, and delete update cached pages from responses without extra 
   await settled(feed.observer);
   const listUpdatedAt = client.getQueryState(postKeys.list).dataUpdatedAt;
 
-  await mutate(client, createPostMutationOptions(client), "Created post");
+  await mutate(client, createPostMutationOptions(client), { content: "Created post" });
   assert.deepEqual(feed.observer.getCurrentResult().data, [firstPost, secondPost, createdPost]);
   assert.deepEqual(client.getQueryData(postKeys.detail(createdPost._id)), createdPost);
 
@@ -209,12 +209,71 @@ test("create, edit, and delete update cached pages from responses without extra 
   ]);
 });
 
+test("image-only edits send multipart files and update the feed and detail image", async () => {
+  const client = clientForTest();
+  const original = {
+    ...firstPost,
+    image: { url: "https://example.com/old.jpg", publicId: "posts/old" },
+  };
+  const savedPost = {
+    ...original,
+    image: { url: "https://example.com/new.png", publicId: "posts/new" },
+  };
+  const image = new File(["image bytes"], "replacement.png", { type: "image/png" });
+  client.setQueryData(postKeys.list, [original, secondPost]);
+  client.setQueryData(postKeys.detail(original._id), original);
+  mockRequests((config) => {
+    assert.equal(config.method, "put");
+    assert.ok(config.data instanceof FormData);
+    assert.equal(config.data.get("content"), original.content);
+    assert.equal(config.data.get("image"), image);
+    assert.equal(config.data.has("removeImage"), false);
+    return { post: savedPost };
+  });
+
+  const result = await mutate(client, updatePostMutationOptions(client), {
+    id: original._id,
+    content: original.content,
+    image,
+  });
+
+  assert.deepEqual(result, { post: savedPost });
+  assert.deepEqual(client.getQueryData(postKeys.list), [savedPost, secondPost]);
+  assert.deepEqual(client.getQueryData(postKeys.detail(original._id)), savedPost);
+});
+
+test("image removal sends an explicit flag and preserves cleanup warnings with the saved post", async () => {
+  const client = clientForTest();
+  const original = {
+    ...firstPost,
+    image: { url: "https://example.com/old.jpg", publicId: "posts/old" },
+  };
+  const warning = "Post updated, but the previous image could not be removed from image storage.";
+  client.setQueryData(postKeys.list, [original]);
+  client.setQueryData(postKeys.detail(original._id), original);
+  mockRequests((config) => {
+    assert.equal(config.method, "put");
+    assert.deepEqual(JSON.parse(config.data), { content: original.content, removeImage: true });
+    return { post: firstPost, warning };
+  });
+
+  const result = await mutate(client, updatePostMutationOptions(client), {
+    id: original._id,
+    content: original.content,
+    removeImage: true,
+  });
+
+  assert.equal(result.warning, warning);
+  assert.deepEqual(client.getQueryData(postKeys.list), [firstPost]);
+  assert.deepEqual(client.getQueryData(postKeys.detail(original._id)), firstPost);
+});
+
 test("mutating before visiting the feed does not invent an incomplete cached list", async () => {
   const client = clientForTest();
   const savedPost = { ...firstPost, content: "Saved" };
-  mockRequests((config) => config.method === "put" ? { post: savedPost } : savedPost);
+  mockRequests(() => ({ post: savedPost }));
 
-  await mutate(client, createPostMutationOptions(client), firstPost.content);
+  await mutate(client, createPostMutationOptions(client), { content: firstPost.content });
   assert.equal(client.getQueryData(postKeys.list), undefined);
   assert.deepEqual(client.getQueryData(postKeys.detail(firstPost._id)), savedPost);
   await mutate(client, updatePostMutationOptions(client), { id: firstPost._id, content: "Saved" });
@@ -235,7 +294,7 @@ test("failed mutations leave cached posts and freshness unchanged", async () => 
   });
 
   for (const [options, variables] of [
-    [createPostMutationOptions(client), "New draft"],
+    [createPostMutationOptions(client), { content: "New draft" }],
     [updatePostMutationOptions(client), { id: firstPost._id, content: "Changed draft" }],
     [deletePostMutationOptions(client), firstPost._id],
   ]) {
@@ -319,7 +378,11 @@ test("an older in-flight GET cannot overwrite a successful edit", async () => {
 function seedNewSession(client) {
   advanceSessionVersion(client);
   client.clear();
-  const newSessionPost = { ...firstPost, author: "user-2", content: "New session's post" };
+  const newSessionPost = {
+    ...firstPost,
+    author: { _id: "user-2", username: "next-reader" },
+    content: "New session's post",
+  };
   client.setQueryData(["currentUser"], { _id: "user-2", username: "next-reader" });
   client.setQueryData(postKeys.list, [newSessionPost, secondPost]);
   client.setQueryData(postKeys.detail(firstPost._id), newSessionPost);
@@ -335,7 +398,7 @@ function cacheSnapshot(client) {
 
 for (const operation of ["create", "update", "delete"]) {
   function mutationForOperation(client) {
-    if (operation === "create") return [createPostMutationOptions(client), "Old session draft"];
+    if (operation === "create") return [createPostMutationOptions(client), { content: "Old session draft" }];
     if (operation === "update") {
       return [updatePostMutationOptions(client), { id: firstPost._id, content: "Old session draft" }];
     }
@@ -344,7 +407,7 @@ for (const operation of ["create", "update", "delete"]) {
 
   function oldSessionResponse(config) {
     const oldPost = { ...firstPost, content: "Saved by previous session" };
-    if (operation === "create") return response(config, { ...oldPost, _id: "post-3" });
+    if (operation === "create") return response(config, { post: { ...oldPost, _id: "post-3" } });
     if (operation === "update") return response(config, { post: oldPost });
     return response(config, undefined);
   }

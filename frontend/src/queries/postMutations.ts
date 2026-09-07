@@ -2,7 +2,12 @@ import type { QueryClient } from "@tanstack/react-query";
 import { createPost, deletePost, updatePost } from "../services/postsApi";
 import { postKeys } from "./postQueries";
 import { getSessionVersion } from "../queryClient";
-import type { CreatePostInput, Post } from "../types/post";
+import type {
+  CreatePostInput,
+  Post,
+  UpdatePostInput,
+  UpdatePostResult,
+} from "../types/post";
 
 async function cacheSavedPost(
   queryClient: QueryClient,
@@ -46,10 +51,10 @@ export function updatePostMutationOptions(queryClient: QueryClient) {
     mutationFn: updatePost,
     onMutate: () => getSessionVersion(queryClient),
     onSuccess: (
-      post: Post,
-      _input: { id: string; content: string },
+      result: UpdatePostResult,
+      _input: UpdatePostInput,
       sessionVersion: number,
-    ) => cacheSavedPost(queryClient, post, false, sessionVersion),
+    ) => cacheSavedPost(queryClient, result.post, false, sessionVersion),
   };
 }
 

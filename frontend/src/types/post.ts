@@ -21,3 +21,13 @@ export interface CreatePostInput {
   content: string;
   image?: File;
 }
+
+export interface UpdatePostInput extends CreatePostInput {
+  id: string;
+  removeImage?: boolean;
+}
+
+export interface UpdatePostResult {
+  post: Post;
+  warning?: string;
+}
