@@ -9,8 +9,11 @@ function CreatePostPage() {
   const navigate = useNavigate();
 
   const [content, setContent] = useState("");
+  const [image, setImage] = useState<File | undefined>();
   const [validationError, setValidationError] = useState("");
+
   const isSubmitting = createPost.isPending;
+
   const error =
     validationError ||
     (createPost.error
@@ -21,6 +24,7 @@ function CreatePostPage() {
     e.preventDefault();
 
     if (isSubmitting) return;
+
     setValidationError("");
     createPost.reset();
 
@@ -30,7 +34,10 @@ function CreatePostPage() {
     }
 
     try {
-      await createPost.mutateAsync(content.trim());
+      await createPost.mutateAsync({
+        content: content.trim(),
+        image,
+      });
 
       toast.success("Post created successfully!", {
         position: "top-right",
@@ -38,6 +45,7 @@ function CreatePostPage() {
         hideProgressBar: true,
         theme: "light",
       });
+
       navigate("/");
     } catch {
       // The mutation supplies the error rendered below.
@@ -57,6 +65,26 @@ function CreatePostPage() {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           disabled={isSubmitting}
+        />
+
+        <br />
+        <br />
+
+        <label htmlFor="image">Add an image (optional)</label>
+
+        <br />
+
+        <input
+          id="image"
+          name="image"
+          type="file"
+          accept="image/*"
+          disabled={isSubmitting}
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+
+            setImage(file);
+          }}
         />
 
         {error && <p>{error}</p>}

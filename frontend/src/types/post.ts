@@ -4,3 +4,8 @@ export type Post = {
   username: string;
   content: string;
 };
+
+export interface CreatePostInput {
+  content: string;
+  image?: File;
+}
