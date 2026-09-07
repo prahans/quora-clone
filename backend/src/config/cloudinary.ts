@@ -1,5 +1,7 @@
 import { v2 as cloudinary } from "cloudinary";
 
+export class CloudinaryConfigurationError extends Error {}
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -18,7 +20,7 @@ export function validateCloudinaryConfig() {
     .map(([name]) => name);
 
   if (missing.length > 0) {
-    throw new Error(
+    throw new CloudinaryConfigurationError(
       `Cloudinary configuration missing: ${missing.join(", ")}. Set these environment variables on the backend service and restart it.`,
     );
   }

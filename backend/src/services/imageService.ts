@@ -29,6 +29,7 @@ export function uploadImage(buffer: Buffer) {
       },
     );
 
+    uploadStream.on("error", reject);
     uploadStream.end(buffer);
   });
 }

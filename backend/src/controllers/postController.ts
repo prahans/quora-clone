@@ -3,6 +3,7 @@ import { isValidObjectId } from "mongoose";
 
 import Post from "../models/posts.ts";
 import { uploadImage } from "../services/imageService.ts";
+import { getImageUploadFailure } from "../services/imageUploadErrors.ts";
 
 export async function getPosts(req: Request, res: Response) {
   try {
@@ -48,11 +49,13 @@ export async function createPost(req: Request, res: Response) {
           publicId: uploadedImage.public_id,
         };
       } catch (error) {
+        const failure = getImageUploadFailure(error);
         console.error("Image upload error:", error);
 
-        return res.status(502).json({
+        return res.status(failure.status).json({
           success: false,
-          message: "Image upload failed. Please try again later.",
+          code: failure.code,
+          message: failure.message,
         });
       }
     }
