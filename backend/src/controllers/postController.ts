@@ -80,7 +80,7 @@ export async function getPost(req: Request, res: Response) {
   }
 
   try {
-    const post = await Post.findById(id);
+    const post = await Post.findById(id).populate("author", "username");
 
     if (!post) {
       res.status(404).json({ success: false, message: "Post not found" });
@@ -162,6 +162,8 @@ export async function updatePost(req: Request, res: Response) {
     post.content = content;
 
     const updatedPost = await post.save();
+
+    await updatedPost.populate("author", "username");
 
     res.status(200).json({
       success: true,
