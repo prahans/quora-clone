@@ -5,7 +5,9 @@ import { uploadImage } from "../services/imageService.ts";
 
 export async function getPosts(req: Request, res: Response) {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find()
+      .populate("author", "username")
+      .sort({ createdAt: -1 });
 
     res.status(200).json(posts);
   } catch (error) {
@@ -50,6 +52,8 @@ export async function createPost(req: Request, res: Response) {
       content: content.trim(),
       image,
     });
+
+    await post.populate("author", "username");
 
     return res.status(201).json({
       success: true,
