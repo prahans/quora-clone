@@ -112,6 +112,7 @@ function FeedPage() {
   return (
     <>
       <h1>Quora Posts</h1>
+      <h2>hello world</h2>
       {currentUserQuery.error && (
         <p role="alert">
           {getErrorMessage(
