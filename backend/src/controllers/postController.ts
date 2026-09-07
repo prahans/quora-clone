@@ -40,12 +40,21 @@ export async function createPost(req: Request, res: Response) {
       | undefined;
 
     if (req.file) {
-      const uploadedImage = await uploadImage(req.file.buffer);
+      try {
+        const uploadedImage = await uploadImage(req.file.buffer);
 
-      image = {
-        url: uploadedImage.secure_url,
-        publicId: uploadedImage.public_id,
-      };
+        image = {
+          url: uploadedImage.secure_url,
+          publicId: uploadedImage.public_id,
+        };
+      } catch (error) {
+        console.error("Image upload error:", error);
+
+        return res.status(502).json({
+          success: false,
+          message: "Image upload failed. Please try again with a JPG, PNG or WEBP image.",
+        });
+      }
     }
 
     const post = await Post.create({

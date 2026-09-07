@@ -78,14 +78,33 @@ function CreatePostPage() {
           id="image"
           name="image"
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp"
+          aria-describedby="image-help"
           disabled={isSubmitting}
           onChange={(e) => {
             const file = e.target.files?.[0];
+            setValidationError("");
+            createPost.reset();
+            setImage(undefined);
+
+            if (!file) return;
+
+            if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+              setValidationError("Please choose a JPEG, PNG, or WebP image.");
+              e.target.value = "";
+              return;
+            }
+
+            if (file.size > 5 * 1024 * 1024) {
+              setValidationError("Please choose an image no larger than 5 MB.");
+              e.target.value = "";
+              return;
+            }
 
             setImage(file);
           }}
         />
+        <p id="image-help">JPEG, PNG, or WebP, up to 5 MB.</p>
 
         {error && <p>{error}</p>}
 

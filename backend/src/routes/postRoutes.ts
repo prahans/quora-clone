@@ -7,7 +7,7 @@ import {
   getPosts,
   updatePost,
 } from "../controllers/postController.ts";
-import { upload } from "../middlewares/upload.ts";
+import { uploadPostImage } from "../middlewares/upload.ts";
 
 const router = Router();
 
@@ -18,7 +18,7 @@ router.get("/", userVerification, getPosts);
 router.get("/:id", userVerification, getPost);
 
 // CREATE POST
-router.post("/", userVerification, upload.single("image"), createPost);
+router.post("/", userVerification, uploadPostImage, createPost);
 
 // DELETE POST
 router.delete("/:id", userVerification, deletePost);
