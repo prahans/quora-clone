@@ -1,31 +1,39 @@
 import mongoose, { Schema } from "mongoose";
 
+interface PostImage {
+  url?: string;
+  publicId?: string;
+}
+
 interface Post {
-  author: mongoose.Types.ObjectId;
-  username: string;
   content: string;
+  image?: PostImage;
+  author: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
 
 const postSchema = new Schema<Post>(
   {
-    author: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
-
-    username: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
     content: {
       type: String,
       required: true,
       trim: true,
+    },
+
+    image: {
+      url: {
+        type: String,
+      },
+      publicId: {
+        type: String,
+      },
+    },
+
+    author: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
   },
   {
