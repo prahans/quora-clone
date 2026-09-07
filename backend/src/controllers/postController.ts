@@ -3,6 +3,21 @@ import type { Request, Response } from "express";
 import Post from "../models/posts.ts";
 import { uploadImage } from "../services/imageService.ts";
 
+export async function getPosts(req: Request, res: Response) {
+  try {
+    const posts = await Post.find();
+
+    res.status(200).json(posts);
+  } catch (error) {
+    console.error("Get posts error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+}
+
 export async function createPost(req: Request, res: Response) {
   try {
     const { content } = req.body;

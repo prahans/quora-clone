@@ -4,26 +4,13 @@ import { isValidObjectId } from "mongoose";
 
 import Post from "../models/posts.ts";
 import { userVerification } from "../middlewares/authMiddleware.ts";
-import { createPost } from "../controllers/postController.ts";
+import { createPost, getPosts } from "../controllers/postController.ts";
 import { upload } from "../middlewares/upload.ts";
 
 const router = Router();
 
 // GET ALL POSTS
-router.get("/", userVerification, async (req: Request, res: Response) => {
-  try {
-    const posts = await Post.find();
-
-    res.status(200).json(posts);
-  } catch (error) {
-    console.error("Get posts error:", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-});
+router.get("/", userVerification, getPosts);
 
 // GET ONE POST
 router.get("/:id", userVerification, async (req: Request, res: Response) => {
