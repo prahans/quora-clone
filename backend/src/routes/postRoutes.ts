@@ -4,6 +4,8 @@ import { isValidObjectId } from "mongoose";
 
 import Post from "../models/posts.ts";
 import { userVerification } from "../middlewares/authMiddleware.ts";
+import { createPost } from "../controllers/postController.ts";
+import { upload } from "../middlewares/upload.ts";
 
 const router = Router();
 
@@ -48,35 +50,7 @@ router.get("/:id", userVerification, async (req: Request, res: Response) => {
 });
 
 // CREATE POST
-router.post("/", userVerification, async (req: Request, res: Response) => {
-  try {
-    const { content } = req.body;
-
-    if (!content?.trim()) {
-      res.status(400).json({
-        success: false,
-        message: "Content is required",
-      });
-
-      return;
-    }
-
-    const post = await Post.create({
-      author: req.user!._id,
-      username: req.user!.username,
-      content: content.trim(),
-    });
-
-    res.status(201).json(post);
-  } catch (error) {
-    console.error("Create post error:", error);
-
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
-});
+router.post("/", userVerification, upload.single("image"), createPost);
 
 // DELETE POST
 router.delete("/:id", userVerification, async (req: Request, res: Response) => {
