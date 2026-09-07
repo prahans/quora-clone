@@ -121,6 +121,9 @@ MONGO_URL=mongodb://127.0.0.1:27017/quora-clone
 TOKEN_KEY=replace_with_your_own_random_secret
 FRONTEND_URL=http://localhost:5173
 NODE_ENV=development
+CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
 ```
 
 Generate a random value for `TOKEN_KEY` with:
@@ -129,7 +132,7 @@ Generate a random value for `TOKEN_KEY` with:
 node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"
 ```
 
-Replace the placeholder with the generated value. If using hosted MongoDB, replace `MONGO_URL` with your connection string. Keep real secrets out of Git.
+Replace the placeholder with the generated value. If using hosted MongoDB, replace `MONGO_URL` with your connection string. Image uploads require all three `CLOUDINARY_*` values from your Cloudinary account. `backend/.env` is ignored by Git, so its values are not deployed to Render. Keep real secrets out of Git and restart the local backend after changing its environment variables.
 
 ### 3. Start the backend
 
@@ -224,6 +227,11 @@ Set these environment variables in Render:
 | `TOKEN_KEY`    | A private, randomly generated signing secret |
 | `FRONTEND_URL` | `https://quora-clone-lemon-two.vercel.app`   |
 | `NODE_ENV`     | `production`                                 |
+| `CLOUDINARY_CLOUD_NAME` | Your Cloudinary cloud name for image uploads |
+| `CLOUDINARY_API_KEY` | Your Cloudinary API key for image uploads |
+| `CLOUDINARY_API_SECRET` | Your Cloudinary API secret for image uploads |
+
+The hosted backend needs its own environment variables; it cannot read your local `backend/.env`. In the Render Dashboard, select the backend service, open **Environment**, and add the three `CLOUDINARY_*` keys and their values under **Environment Variables**. Choose **Save and deploy** to redeploy the existing build with the new values, then retry an image upload after deployment completes. **Save only** does not apply the values until the next deploy. See [Render's environment variable guide](https://render.com/docs/configure-environment-variables).
 
 The server reads `PORT` from the environment and falls back to `3000`. Use a database reachable from Render; a database running only on your laptop is not available to the hosted backend.
 

@@ -1,10 +1,12 @@
-import cloudinary from "../config/cloudinary.ts";
+import cloudinary, { validateCloudinaryConfig } from "../config/cloudinary.ts";
 
 export function uploadImage(buffer: Buffer) {
   return new Promise<{
     secure_url: string;
     public_id: string;
   }>((resolve, reject) => {
+    validateCloudinaryConfig();
+
     const uploadStream = cloudinary.uploader.upload_stream(
       {
         folder: "quora/posts",

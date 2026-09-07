@@ -52,7 +52,7 @@ export async function createPost(req: Request, res: Response) {
 
         return res.status(502).json({
           success: false,
-          message: "Image upload failed. Please try again with a JPG, PNG or WEBP image.",
+          message: "Image upload failed. Please try again later.",
         });
       }
     }
